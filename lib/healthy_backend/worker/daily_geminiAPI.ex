@@ -3,7 +3,7 @@ defmodule HealthyBackend.DailyGeminiAPI do
   alias HealthyBackend.GeminiAPI
   alias HealthyBackend.Diseases
 
-  @timer Application.get_env(:healthy_backend, :FETCH_DATA_INTERVAL)
+  @timer Application.compile_env(:healthy_backend, :FETCH_DATA_INTERVAL, 1440)
 
   # Client API
   def start_link(_opts) do
