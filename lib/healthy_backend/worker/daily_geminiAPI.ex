@@ -26,7 +26,7 @@ defmodule HealthyBackend.DailyGeminiAPI do
 
   # Periodic task - schedule to run every 5 minutes
   defp schedule_work do
-    Process.send_after(self(), :work, 10 * 60 * 1000)  # 5 minutes in milliseconds
+    Process.send_after(self(), :work, 1 * 1 * 1000)  # 5 minutes in milliseconds
   end
 
   defp create_posts do
@@ -42,15 +42,26 @@ defmodule HealthyBackend.DailyGeminiAPI do
             question = name_format(question)
             case GeminiAPI.call_api(question) do
               {:ok, answer} ->
-                case Diseases.create_diseases(%{title: batch_string(question), name: question, data: answer}) do
-                  {:ok, disease} ->
-                    disease
-                  {:error, changeset} ->
-                    IO.puts("❌ DB error: #{inspect(changeset)}")
+                if String.starts_with?(answer, "[\n{\n\"") do
+                  case Diseases.create_diseases(%{
+                    title: batch_string(question),
+                    name: question,
+                    data: answer
+                  }) do
+                    {:ok, disease} ->
+                      disease
+
+                    {:error, changeset} ->
+                      IO.puts("❌ DB error: #{inspect(changeset)}")
+                  end
+                else
+                  IO.puts("⚠️ Bỏ qua vì format không đúng")
                 end
+
               {:error, reason} ->
                 IO.puts("❌ GeminiAPI answer error: #{reason}")
             end
+
           else
             IO.puts("❌ Question already exists in DB: #{question}")
           end

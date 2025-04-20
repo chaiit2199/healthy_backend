@@ -44,6 +44,7 @@ defmodule HealthyBackendWeb.AIController do
 
   defp format_data(data) do
     data
+    |> String.replace("\n", " ")
     |> Jason.decode!()
     |> List.first()
   end
