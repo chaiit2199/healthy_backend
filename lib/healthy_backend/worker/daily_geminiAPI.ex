@@ -3,6 +3,8 @@ defmodule HealthyBackend.DailyGeminiAPI do
   alias HealthyBackend.GeminiAPI
   alias HealthyBackend.Diseases
 
+  @timer Application.get_env(:healthy_backend, :FETCH_DATA_INTERVAL)
+
   # Client API
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -26,7 +28,7 @@ defmodule HealthyBackend.DailyGeminiAPI do
 
   # Periodic task - schedule to run every 5 minutes
   defp schedule_work do
-    Process.send_after(self(), :work, 1 * 1 * 1000)  # 5 minutes in milliseconds
+    Process.send_after(self(), :work, @timer * 60 * 1000)  # 5 minutes in milliseconds
   end
 
   defp create_posts do
