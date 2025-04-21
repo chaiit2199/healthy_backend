@@ -28,8 +28,8 @@ defmodule HealthyBackend.DailyGeminiAPI do
 
   # Periodic task - schedule to run every 5 minutes
   defp schedule_work do
-    timer = Application.get_env(:healthy_backend, :FETCH_DATA_INTERVAL)
-    Process.send_after(self(), :work, timer * 60 * 1000)  # 5 minutes in milliseconds
+    timer = Application.get_env(:healthy_backend, :FETCH_DATA_INTERVAL) |> IO.inspect(label: "timer123")
+    Process.send_after(self(), :work, String.to_integer(timer) * 60 * 1000)  # 5 minutes in milliseconds
   end
 
   defp create_posts do
