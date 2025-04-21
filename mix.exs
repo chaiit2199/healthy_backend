@@ -36,7 +36,6 @@ defmodule HealthyBackend.MixProject do
       {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 4.1.1"},
-      {:phoenix_copy, "~> 0.1.4"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -44,9 +43,6 @@ defmodule HealthyBackend.MixProject do
       {:httpoison, "~> 1.8"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.0"},
-      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
-      {:dart_sass, "~> 0.5.1", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 0.6"},
@@ -65,23 +61,9 @@ defmodule HealthyBackend.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": [
-        "phx.copy default tnc",
-        "esbuild default",
-        "sass default",
-        "tailwind default"
-      ],
-      "assets.deploy": [
-        "phx.copy default tnc",
-        "sass default",
-        "tailwind default --minify",
-        "esbuild default --minify",
-        "phx.digest"
-      ]
+      "ecto.reset": ["ecto.drop", "ecto.setup"]
     ]
   end
 end

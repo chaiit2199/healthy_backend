@@ -8,7 +8,6 @@ MIX_ENV=prod mix compile
 
 # * change mode to assets deploy local
 MIX_ENV=prod mix ua_inspector.download --force
-# sudo chown $USER -R ./priv/static
 MIX_ENV=prod mix assets.deploy
 
 # Release

@@ -28,7 +28,7 @@ defmodule HealthyBackend.DailyGeminiAPI do
 
   # Periodic task - schedule to run every 5 minutes
   defp schedule_work do
-    timer = Application.get_env(:healthy_backend, :FETCH_DATA_INTERVAL) |> IO.inspect(label: "timer123")
+    timer = Application.get_env(:healthy_backend, :FETCH_DATA_INTERVAL)
     Process.send_after(self(), :work, String.to_integer(timer) * 60 * 1000)  # 5 minutes in milliseconds
   end
 
@@ -45,14 +45,14 @@ defmodule HealthyBackend.DailyGeminiAPI do
             question = name_format(question)
             case GeminiAPI.call_api(question) do
               {:ok, answer} ->
-                if String.starts_with?(answer |> IO.inspect(label: "answeransweransweranswer"), "[\n{\n\"") do
+                if String.starts_with?(answer, "[\n{\n\"") do
                   case Diseases.create_diseases(%{
                     title: batch_string(question),
                     name: question,
                     data: answer
                   }) do
                     {:ok, disease} ->
-                      disease |> IO.inspect(label: "123123126873612873612")
+                      disease
 
                     {:error, changeset} ->
                       IO.puts("❌ DB error: #{inspect(changeset)}")
