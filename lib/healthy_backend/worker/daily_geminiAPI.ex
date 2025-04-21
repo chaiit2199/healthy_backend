@@ -29,19 +29,19 @@ defmodule HealthyBackend.DailyGeminiAPI do
   # Periodic task - schedule to run every 5 minutes
   defp schedule_work do
     timer = Application.get_env(:healthy_backend, :FETCH_DATA_INTERVAL)
-    Process.send_after(self(), :work, String.to_integer(timer) * 60 * 1000)  # 5 minutes in milliseconds
+    Process.send_after(self(), :work, String.to_integer(timer) * 1 * 1000)  # timer minuteså
   end
 
   defp create_posts do
     case GeminiAPI.call_api("Hãy liệt kê 3 câu hỏi phổ biến về sức khỏe hôm nay") do
       {:ok, raw_questions} when is_binary(raw_questions) ->
-        IO.puts("✅ Raw questions received: #{raw_questions}")
         raw_questions
         |> parse_questions()
         |> remove_similar_questions()
         |> Enum.take(3)
         |> Enum.each(fn question ->
           if !question_exists?(question) do
+
             question = name_format(question)
             case GeminiAPI.call_api(question) do
               {:ok, answer} ->
@@ -64,7 +64,6 @@ defmodule HealthyBackend.DailyGeminiAPI do
               {:error, reason} ->
                 IO.puts("❌ GeminiAPI answer error: #{reason}")
             end
-
           else
             IO.puts("❌ Question already exists in DB: #{question}")
           end
@@ -83,12 +82,17 @@ defmodule HealthyBackend.DailyGeminiAPI do
   end
 
   defp question_exists?(question) do
-    # Kiểm tra câu hỏi đã có trong DB hay chưa
-    case Diseases.get_diseases_names() do
-      names when is_list(names) -> Enum.member?(names, question)
-      _ -> false  # Nếu không tìm thấy hoặc không có dữ liệu
+    case Diseases.get_diseases_titles() do
+      names when is_list(names) ->
+        names
+        |> MapSet.new()
+        |> MapSet.member?(name_format(question))
+
+      _ ->
+        false
     end
   end
+
 
   defp parse_questions(text) do
     text

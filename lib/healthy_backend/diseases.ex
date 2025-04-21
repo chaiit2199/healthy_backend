@@ -40,6 +40,13 @@ defmodule HealthyBackend.Diseases do
     |> Repo.all()
   end
 
+  def get_diseases_titles do
+    from(d in HealthyBackend.Diseases,
+      select: d.title
+    )
+    |> Repo.all()
+  end
+
   def get_by_name(name) do
     from(d in HealthyBackend.Diseases,
       where: d.name == ^name
