@@ -1,9 +1,6 @@
 defmodule HealthyBackend.GeminiAPI do
   require Logger
 
-  @api_key Application.get_env(:healthy_backend, :API_KEY_GEMINI)
-  @url Application.get_env(:healthy_backend, :URL_GEMINI)
-
   def call_api(prompt) do
     # Kiểm tra và chuyển đổi chuỗi thành danh sách câu hỏi nếu cần
     prompt = if is_bitstring(prompt) do
@@ -46,8 +43,10 @@ defmodule HealthyBackend.GeminiAPI do
 
     #{Enum.join(prompt_without_questions, "\n")}
     """
+    api_key = Application.get_env(:healthy_backend, :API_KEY_GEMINI)
+    url_gemini = Application.get_env(:healthy_backend, :URL_GEMINI)
 
-    url = "#{@url}#{@api_key}"
+    url = "#{url_gemini}#{api_key}"
     headers = [{"Content-Type", "application/json"}]
     body = Jason.encode!(%{
       "contents" => [
