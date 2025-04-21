@@ -45,14 +45,14 @@ defmodule HealthyBackend.DailyGeminiAPI do
             question = name_format(question)
             case GeminiAPI.call_api(question) do
               {:ok, answer} ->
-                if String.starts_with?(answer, "[\n{\n\"") do
+                if String.starts_with?(answer |> IO.inspect(label: "answeransweransweranswer"), "[\n{\n\"") do
                   case Diseases.create_diseases(%{
                     title: batch_string(question),
                     name: question,
                     data: answer
                   }) do
                     {:ok, disease} ->
-                      disease
+                      disease |> IO.inspect(label: "123123126873612873612")
 
                     {:error, changeset} ->
                       IO.puts("❌ DB error: #{inspect(changeset)}")
