@@ -82,17 +82,12 @@ defmodule HealthyBackend.DailyGeminiAPI do
   end
 
   defp question_exists?(question) do
+    # Kiểm tra câu hỏi đã có trong DB hay chưa
     case Diseases.get_diseases_titles() do
-      names when is_list(names) ->
-        names
-        |> MapSet.new()
-        |> MapSet.member?(name_format(question))
-
-      _ ->
-        false
+      names when is_list(names) -> Enum.member?(names, name_format(question))
+      _ -> false  # Nếu không tìm thấy hoặc không có dữ liệu
     end
   end
-
 
   defp parse_questions(text) do
     text
