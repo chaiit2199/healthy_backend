@@ -8,7 +8,7 @@ if config_env() == :prod do
   secret_key_base = System.get_env("SECRET_KEY_BASE") || raise ("No SECRET_KEY_BASE config.")
   api_key_base = System.get_env("API_KEY_GEMINI") || raise ("No API_KEY_GEMINI config.")
   url_gemini = System.get_env("URL_GEMINI") || raise ("No URL_GEMINI config.")
-  fetch_data_interval = System.get_env("FETCH_DATA_INTERVAL") || raise ("No FETCH_DATA_INTERVAL config.")
+  gemini_crontab = System.get_env("GEMINI_CRONTAB") || raise ("No GEMINI_CRONTAB config.")
   allow_check_origin = System.get_env("ALLOW_CHECK_ORIGIN") || raise ("No ALLOW_CHECK_ORIGIN config.")
 
   config :healthy_backend, HealthyBackend.Repo,
@@ -37,5 +37,5 @@ if config_env() == :prod do
     env: config_env(),
     API_KEY_GEMINI: api_key_base,
     URL_GEMINI: url_gemini,
-    FETCH_DATA_INTERVAL: fetch_data_interval
+    GEMINI_CRONTAB: gemini_crontab
 end

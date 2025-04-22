@@ -4,9 +4,12 @@ defmodule HealthyBackend.Application do
   @moduledoc false
 
   use Application
+  alias HealthyBackend.DailyGeminiAPI
 
   @impl true
   def start(_type, _args) do
+    gemini_crontab = Application.get_env(:healthy_backend, :GEMINI_CRONTAB) || "0 0 * * *"
+
     children = [
       # Start the Telemetry supervisor
       HealthyBackendWeb.Telemetry,
@@ -18,7 +21,10 @@ defmodule HealthyBackend.Application do
       {Finch, name: HealthyBackend.Finch},
       # Start the Endpoint (http/https)
       HealthyBackendWeb.Endpoint,
-        {HealthyBackend.DailyGeminiAPI, []}
+      %{
+        id: "refresh_data",
+        start: {SchedEx, :run_every, [DailyGeminiAPI, :work, [], gemini_crontab]}
+      },
       # Start a worker by calling: HealthyBackend.Worker.start_link(arg)
       # {HealthyBackend.Worker, arg}
     ]

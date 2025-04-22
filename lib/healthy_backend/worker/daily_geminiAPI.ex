@@ -3,8 +3,6 @@ defmodule HealthyBackend.DailyGeminiAPI do
   alias HealthyBackend.GeminiAPI
   alias HealthyBackend.Diseases
 
-
-
   # Client API
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -16,20 +14,17 @@ defmodule HealthyBackend.DailyGeminiAPI do
 
   # Server Callbacks
   def init(state) do
-    schedule_work()  # Start the periodic task
     {:ok, state}
   end
 
   def handle_info(:work, state) do
     create_posts()  # Call GeminiAPI and create 3 posts
-    schedule_work()  # Schedule the next execution in 5 minutes
     {:noreply, state}
   end
 
-  # Periodic task - schedule to run every 5 minutes
-  defp schedule_work do
-    timer = Application.get_env(:healthy_backend, :FETCH_DATA_INTERVAL)
-    Process.send_after(self(), :work, String.to_integer(timer) * 1 * 1000)  # timer minuteså
+  # This function can be called by SchedEx
+  def work do
+    create_posts()  # This will be called every time the scheduled job runs
   end
 
   defp create_posts do
@@ -41,7 +36,6 @@ defmodule HealthyBackend.DailyGeminiAPI do
         |> Enum.take(3)
         |> Enum.each(fn question ->
           if !question_exists?(question) do
-
             question = name_format(question)
             case GeminiAPI.call_api(question) do
               {:ok, answer} ->
@@ -51,40 +45,32 @@ defmodule HealthyBackend.DailyGeminiAPI do
                     name: question,
                     data: answer
                   }) do
-                    {:ok, disease} ->
-                      disease
-
-                    {:error, changeset} ->
-                      IO.puts("❌ DB error: #{inspect(changeset)}")
+                    {:ok, disease} -> disease
+                    {:error, changeset} -> IO.puts("❌ DB error: #{inspect(changeset)}")
                   end
                 else
                   IO.puts("⚠️ Bỏ qua vì format không đúng")
                 end
-
-              {:error, reason} ->
-                IO.puts("❌ GeminiAPI answer error: #{reason}")
+              {:error, reason} -> IO.puts("❌ GeminiAPI answer error: #{reason}")
             end
           else
             IO.puts("❌ Question already exists in DB: #{question}")
           end
         end)
 
-      {:ok, _} ->
-        IO.puts("❌ Unexpected structure, expected a string but got a different format.")
-
+      {:ok, _} -> IO.puts("❌ Unexpected structure, expected a string but got a different format.")
       {:error, {:api_error, status_code, error_body}} ->
         error_message = "API error: #{status_code} - #{error_body}"
         IO.puts("❌ #{error_message}")
 
-      {:error, reason} ->
-        IO.puts("❌ GeminiAPI question fetch error: #{inspect(reason)}")
+      {:error, reason} -> IO.puts("❌ GeminiAPI question fetch error: #{inspect(reason)}")
     end
   end
 
   defp question_exists?(question) do
     # Kiểm tra câu hỏi đã có trong DB hay chưa
     case Diseases.get_diseases_titles() do
-      names when is_list(names) -> Enum.member?(names, name_format(question))
+      names when is_list(names) -> Enum.member?(names, batch_string(question))
       _ -> false  # Nếu không tìm thấy hoặc không có dữ liệu
     end
   end
@@ -108,7 +94,6 @@ defmodule HealthyBackend.DailyGeminiAPI do
         |> String.starts_with?("câu hỏi")
       end)
   end
-
 
   defp normalize_question(text) do
     text
@@ -147,5 +132,4 @@ defmodule HealthyBackend.DailyGeminiAPI do
     |> String.replace(~r/^\s*Câu hỏi \d+: /, "")  # Loại bỏ Câu hỏi X: với khoảng trắng phía trước
     |> String.trim()  # Loại bỏ khoảng trắng dư thừa ở đầu và cuối chuỗi
   end
-
 end
