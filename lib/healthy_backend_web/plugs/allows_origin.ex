@@ -3,6 +3,7 @@ defmodule Restrict.AllowsOrigin do
   Allows affected ressources to be open in iframe.
   """
 
+  alias Plug.Conn
   import Plug.Conn
 
   def init(opts \\ %{}), do: Enum.into(opts, %{})
