@@ -76,6 +76,6 @@ config :swoosh, :api_client, false
 
 config :healthy_backend,
   env: config_env(),
-  API_KEY_GEMINI: "AIzaSyAPrYMGH0PUjcHlgPEUqJ_kAd2mTtPzyFQ",
+  API_KEY_GEMINI: "AIzaSyA_R4-EgM1mDZXkXkdFXEdFUjXNFGuGMG4",
   URL_GEMINI: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=",
   FETCH_DATA_INTERVAL: "1"

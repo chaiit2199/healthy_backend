@@ -10,7 +10,7 @@ defmodule Restrict.AllowsOrigin do
 
   def call(conn, _opts) do
     whitelist =
-      (Application.get_env(:k_web, KWebWeb.Endpoint)[:allow_check_origin] || "")
+      (Application.get_env(:healthy_backend, HealthyBackendWeb.Endpoint)[:allow_check_origin] || "")
       |> String.split(",")
 
     origin = Conn.get_req_header(conn, "origin") |> List.first()
