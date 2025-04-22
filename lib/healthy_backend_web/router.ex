@@ -11,7 +11,7 @@ defmodule HealthyBackendWeb.Router do
   end
 
   pipeline :api do
-    plug Restrict.AllowsOrigin
+    # plug Restrict.AllowsOrigin
     plug :accepts, ["json"]
   end
 
