@@ -8,12 +8,11 @@ defmodule HealthyBackendWeb.Router do
     plug :put_root_layout, html: {HealthyBackendWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Restrict.AllowsOrigin
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
     plug Restrict.AllowsOrigin
+    plug :accepts, ["json"]
   end
 
   scope "/api", HealthyBackendWeb do

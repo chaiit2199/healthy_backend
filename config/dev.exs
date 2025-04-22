@@ -56,7 +56,7 @@ config :healthy_backend, HealthyBackendWeb.Endpoint,
       ~r"lib/HealthyBackend_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ],
-  allow_check_origin: "10.140.17.77"
+  allow_check_origin: ""
 
 # Enable dev routes for dashboard and mailbox
 config :healthy_backend, dev_routes: true
