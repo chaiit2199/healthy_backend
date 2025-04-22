@@ -13,6 +13,9 @@ defmodule Restrict.AllowsOrigin do
       (Application.get_env(:healthy_backend, HealthyBackendWeb.Endpoint)[:allow_check_origin] || "")
       |> String.split(",")
 
+      conn = conn |>
+      IO.inspect(label: ">> connconnconnconn")
+
     origin = Conn.get_req_header(conn, "origin") |> List.first()
     IO.inspect(origin, label: ">> Origin received")
 
