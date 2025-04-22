@@ -1,13 +1,5 @@
-# Remove the existing release directory and build the release
-rm -rf "_build"
-
-#!/usr/bin/env bash
-# Initial setup
+#!/bin/bash
 mix deps.get --only prod
-MIX_ENV=prod mix compile
-
-# * change mode to assets deploy local
-MIX_ENV=prod mix ua_inspector.download --force
 
 # Release
 MIX_ENV=prod mix release

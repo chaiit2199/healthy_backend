@@ -7,26 +7,21 @@ defmodule Restrict.AllowsOrigin do
   import Plug.Conn
 
   def init(opts \\ %{}), do: Enum.into(opts, %{})
-
   def call(conn, _opts) do
     whitelist =
       (Application.get_env(:healthy_backend, HealthyBackendWeb.Endpoint)[:allow_check_origin] || "")
       |> String.split(",")
 
-      conn = conn |>
-      IO.inspect(label: ">> connconnconnconn")
+    conn = conn |> IO.inspect(label: ">> connconnconnconn")
 
-    origin = Conn.get_req_header(conn, "origin") |> List.first()
-    IO.inspect(origin, label: ">> Origin received")
-
-    if origin in whitelist do
-      conn
+    with [host_request] <- Conn.get_req_header(conn, "origin"),
+         {:ok, %URI{host: host}} <- URI.new(host_request),
+      true <- Enum.any?(whitelist, &Regex.match?(~r"^([A-Za-z0-9-]+.)?(#{&1})$", host)) do
+        conn
     else
-      IO.puts(">> Blocked Origin: #{inspect(origin)}")
-
-      conn
-      |> halt()
+      _ ->
+        conn
+        |> halt()
     end
   end
-
 end
