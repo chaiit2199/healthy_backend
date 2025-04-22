@@ -3,6 +3,16 @@ defmodule HealthyBackend.DailyGeminiAPI do
   alias HealthyBackend.GeminiAPI
   alias HealthyBackend.Diseases
 
+  @categories [
+    "Sức Khỏe Tim Mạch",
+    "Sức Khỏe Tinh Thần",
+    "Dinh Dưỡng",
+    "Thể Dục & Thể Thao",
+    "Sức Khỏe Trẻ Em",
+    "Thuốc & Điều Trị",
+    "Bệnh Lý",
+    "Sơ Cứu & Cấp Cứu"
+  ]
   # Client API
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -28,15 +38,25 @@ defmodule HealthyBackend.DailyGeminiAPI do
   end
 
   defp create_posts do
-    case GeminiAPI.call_api("Hãy liệt kê 3 câu hỏi phổ biến về sức khỏe hôm nay") do
+    # Lấy ngẫu nhiên một danh mục từ danh sách
+    categories = Enum.take_random(@categories, 3) |> IO.inspect(label: "hjhjhjhjhj")
+    |> Enum.join(", ")
+    # Tạo câu hỏi với danh mục
+    question = "Hãy liệt kê 3 câu hỏi phổ biến về sức khỏe trong lĩnh vực #{categories} hôm nay"
+    case GeminiAPI.call_api(question) do
       {:ok, raw_questions} when is_binary(raw_questions) ->
         raw_questions
+
         |> parse_questions()
+
         |> remove_similar_questions()
         |> Enum.take(3)
+
         |> Enum.each(fn question ->
           if !question_exists?(question) do
             question = name_format(question)
+
+            # Thêm trường danh mục vào dữ liệu
             case GeminiAPI.call_api(question) do
               {:ok, answer} ->
                 if String.starts_with?(answer, "[\n{\n\"") do

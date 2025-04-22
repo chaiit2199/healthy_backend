@@ -25,6 +25,9 @@ defmodule HealthyBackend.GeminiAPI do
           Giới thiệu: (Mở đầu bằng cách nhấn mạnh tầm quan trọng của chủ đề, lý do người đọc nên quan tâm. Hãy gợi sự đồng cảm và kết nối cảm xúc)
         },
         {
+          Lĩnh vực: (Lực vực được lấy theo câu hỏi)
+        },
+        {
           Mô tả: (Giải thích ngắn gọn, dễ hiểu về vấn đề. Đưa ra ví dụ cụ thể trong đời sống hằng ngày để người đọc dễ hình dung)
         },
         {
@@ -35,8 +38,8 @@ defmodule HealthyBackend.GeminiAPI do
         },
         {
           Lầm tưởng phổ biến: (Nêu 1-2 hiểu lầm hay gặp và giải thích rõ)
-        }
-          {
+        },
+        {
           Kết luận và lời khuyên: (Tổng kết nội dung một cách nhẹ nhàng và truyền cảm hứng. Đưa ra lời khuyên chân thành, khuyến khích người đọc chăm sóc bản thân và chủ động thay đổi tích cực.)
         }
       ]

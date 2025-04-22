@@ -12,6 +12,16 @@ defmodule HealthyBackend.Diseases do
     timestamps()
   end
 
+  # CREATE TABLE types_diseases (
+  #   id SERIAL PRIMARY KEY,
+  #   title VARCHAR(255),
+  #   name VARCHAR(255),
+  #   data TEXT,
+  #   treatments TEXT,
+  #   inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  #   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  # );
+
   def changeset(diseases, attrs, opts \\ []) do
     diseases
     |> cast(attrs, [:title, :name, :data])
