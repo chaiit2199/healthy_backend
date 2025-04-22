@@ -7,6 +7,7 @@ defmodule Restrict.AllowsOrigin do
   import Plug.Conn
 
   def init(opts \\ %{}), do: Enum.into(opts, %{})
+
   def call(conn, _opts) do
     whitelist =
       (Application.get_env(:healthy_backend, HealthyBackendWeb.Endpoint)[:allow_check_origin] || "")
