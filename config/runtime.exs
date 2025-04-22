@@ -26,6 +26,7 @@ if config_env() == :prod do
 
   config :healthy_backend, HealthyBackendWeb.Endpoint,
     server: true,
+    check_origin: true,
     url: [host: host, port: 443, scheme: "https"],
     http: [ip: {0, 0, 0, 0, 0, 0, 0, 0}, port: http_port],
     secret_key_base: secret_key_base
