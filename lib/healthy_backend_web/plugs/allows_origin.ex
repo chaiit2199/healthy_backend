@@ -3,7 +3,7 @@ defmodule Restrict.AllowsOrigin do
   Allows affected ressources to be open in iframe.
   """
 
-  alias Plug.Conn
+  import Plug.Conn
 
   def init(opts \\ %{}), do: Enum.into(opts, %{})
 
@@ -12,7 +12,7 @@ defmodule Restrict.AllowsOrigin do
       (Application.get_env(:k_web, KWebWeb.Endpoint)[:allow_check_origin] || "")
       |> String.split(",")
 
-    origin = get_req_header(conn, "origin") |> List.first()
+    origin = Conn.get_req_header(conn, "origin") |> List.first()
     IO.inspect(origin, label: ">> Origin received")
 
     if origin in whitelist do
@@ -21,8 +21,8 @@ defmodule Restrict.AllowsOrigin do
       IO.puts(">> Blocked Origin: #{inspect(origin)}")
 
       conn
-      |> send_resp(403, "Forbidden origin")
       |> halt()
     end
   end
+
 end
