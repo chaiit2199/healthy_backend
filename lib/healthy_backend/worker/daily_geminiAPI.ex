@@ -28,7 +28,7 @@ defmodule HealthyBackend.DailyGeminiAPI do
   end
 
   defp create_posts do
-    case GeminiAPI.call_api("Hãy liệt kê 3 câu hỏi phổ biến về sức khỏe hôm nay") do
+    case GeminiAPI.call_api("Hãy liệt kê 3 câu hỏi phổ biến về sức khỏe hôm nay, câu hỏi không được có từ làm sao") do
       {:ok, raw_questions} when is_binary(raw_questions) ->
         raw_questions
         |> parse_questions()
