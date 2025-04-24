@@ -21,6 +21,7 @@ defmodule HealthyBackendWeb.Router do
     get "/ai", AIController, :index
     get "/diseases", AIController, :get
     get "/recent_diseases", AIController, :get_recent_diseases
+    get "/category", AIController, :get_category_posts
   end
 
   scope "/", HealthyBackendWeb do

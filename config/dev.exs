@@ -78,4 +78,4 @@ config :healthy_backend,
   env: config_env(),
   API_KEY_GEMINI: "AIzaSyA_R4-EgM1mDZXkXkdFXEdFUjXNFGuGMG4",
   URL_GEMINI: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=",
-  GEMINI_CRONTAB: "* * * * *"
+  GEMINI_CRONTAB: "0 * * * *"

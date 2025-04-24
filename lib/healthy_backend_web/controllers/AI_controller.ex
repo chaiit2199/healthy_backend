@@ -27,10 +27,28 @@ defmodule HealthyBackendWeb.AIController do
     json(conn, diseases)
   end
 
+  def get_category_posts(conn, %{"category" => category, "page" => page}) do
+    page = String.to_integer(page)
+
+    diseases = Diseases.get_posts_by_category(category, page)
+    |> Enum.map(&format_get_posts_by_category/1)
+
+    json(conn, diseases)
+  end
+
+  def get_category_posts(conn, %{"category" => category}) do
+    page = 1
+
+    diseases = Diseases.get_posts_by_category(CommonComponents.batch_string(category), page)
+    |> Enum.map(&format_get_posts_by_category/1)
+
+    json(conn, diseases)
+  end
+
   defp format_disease(disease) do
     disease
     |> Map.from_struct()
-    |> Map.drop([:__meta__, :treatments, :inserted_at])
+    |> Map.drop([:__meta__, :__id__, :treatments, :inserted_at])
     |> Map.update!(:data, &format_data/1)
     |> Map.update!(:updated_at, &format_date/1)
     |> format_disease_desc()
@@ -42,11 +60,21 @@ defmodule HealthyBackendWeb.AIController do
 
   defp format_disease_desc(map), do: map
 
+  defp format_get_posts_by_category(disease) do
+    disease
+    |> Map.from_struct()
+    |> Map.drop([:__meta__, :__id__, :treatments, :inserted_at])
+    |> Map.update!(:data, &format_data/1)
+    |> Map.update!(:updated_at, &format_date/1)
+    |> format_disease_desc()
+  end
+
   defp format_data(data) do
     data
-    |> String.replace("\n", " ")
-    |> Jason.decode!()
-    |> List.first()
+    |> String.replace("\n", "")  # Remove all newline characters
+    |> String.replace(~r/\s{2,}/, " ")  # Replace multiple spaces with a single space
+    |> Jason.decode!()  # Decode the cleaned string
+    |> List.first()  # Assuming you want to get the first element
   end
 
   defp format_date(datetime) do

@@ -51,6 +51,20 @@ defmodule HealthyBackend.Diseases do
     |> Repo.all()
   end
 
+  def get_posts_by_category(category, page) do
+    limit = 10
+    offset = (page - 1) * limit
+
+    from(p in HealthyBackend.Diseases,
+      where: p.category == ^category,
+      limit: ^limit,
+      offset: ^offset,
+      order_by: [desc: p.inserted_at],
+    )
+    |> Repo.all()
+  end
+
+
   def get_diseases_titles do
     from(d in HealthyBackend.Diseases,
       select: d.title

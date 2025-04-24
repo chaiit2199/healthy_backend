@@ -60,20 +60,29 @@ defmodule HealthyBackend.DailyGeminiAPI do
             case GeminiAPI.call_api(question) do
               {:ok, answer} ->
                 if String.starts_with?(answer, "[\n{\n\"") do
-                  case Diseases.create_diseases(%{
-                    title: batch_string(question),
-                    name: question,
-                    category: category,
-                    data: answer
-                  }) do
-                    {:ok, disease} -> disease
-                    {:error, changeset} -> IO.puts("❌ DB error: #{inspect(changeset)}")
+                  case Jason.decode(answer) do
+                    {:ok, decoded} ->
+                      case Diseases.create_diseases(%{
+                        title: batch_string(question),
+                        name: question,
+                        category: CommonComponents.batch_string(category),
+                        data: answer
+                      }) do
+                        {:ok, disease} -> disease
+                        {:error, changeset} -> IO.puts("❌ DB error: #{inspect(changeset)}")
+                      end
+
+                    {:error, _reason} ->
+                      IO.puts("⚠️ JSON decode failed, skipping")
                   end
                 else
                   IO.puts("⚠️ Bỏ qua vì format không đúng")
                 end
-              {:error, reason} -> IO.puts("❌ GeminiAPI answer error: #{reason}")
+
+              {:error, reason} ->
+                IO.puts("❌ GeminiAPI answer error: #{reason}")
             end
+
           else
             IO.puts("❌ Question already exists in DB: #{question}")
           end
