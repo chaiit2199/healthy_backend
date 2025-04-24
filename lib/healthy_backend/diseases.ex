@@ -7,6 +7,7 @@ defmodule HealthyBackend.Diseases do
   schema "types_diseases" do
     field :title, :string
     field :name, :string
+    field :category, :string
     field :data, :string
     field :treatments, :string
     timestamps()
@@ -24,8 +25,8 @@ defmodule HealthyBackend.Diseases do
 
   def changeset(diseases, attrs, opts \\ []) do
     diseases
-    |> cast(attrs, [:title, :name, :data])
-    |> validate_required([:title, :name, :data])
+    |> cast(attrs, [:title, :name, :category, :data])
+    |> validate_required([:title, :name, :category, :data])
   end
 
   def create_diseases(attrs) do

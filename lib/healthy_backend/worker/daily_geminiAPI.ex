@@ -39,10 +39,10 @@ defmodule HealthyBackend.DailyGeminiAPI do
 
   defp create_posts do
     # Lấy ngẫu nhiên một danh mục từ danh sách
-    categories = Enum.take_random(@categories, 3) |> IO.inspect(label: "hjhjhjhjhj")
+    category = Enum.take_random(@categories, 1)
     |> Enum.join(", ")
     # Tạo câu hỏi với danh mục
-    question = "Hãy liệt kê 3 câu hỏi phổ biến về sức khỏe trong lĩnh vực #{categories} hôm nay"
+    question = "Hãy liệt kê 3 câu hỏi phổ biến về sức khỏe trong lĩnh vực #{category} hôm nay"
     case GeminiAPI.call_api(question) do
       {:ok, raw_questions} when is_binary(raw_questions) ->
         raw_questions
@@ -63,6 +63,7 @@ defmodule HealthyBackend.DailyGeminiAPI do
                   case Diseases.create_diseases(%{
                     title: batch_string(question),
                     name: question,
+                    category: category,
                     data: answer
                   }) do
                     {:ok, disease} -> disease
