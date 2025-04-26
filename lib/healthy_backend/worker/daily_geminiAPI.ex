@@ -42,7 +42,7 @@ defmodule HealthyBackend.DailyGeminiAPI do
     category = Enum.take_random(@categories, 1)
     |> Enum.join(", ")
     # Tạo câu hỏi với danh mục
-    question = "Hãy liệt kê 3 câu hỏi phổ biến về sức khỏe trong lĩnh vực #{category} hôm nay"
+    question = "Hãy liệt kê 2 câu hỏi phổ biến về sức khỏe trong lĩnh vực #{category} hôm nay"
     case GeminiAPI.call_api(question) do
       {:ok, raw_questions} when is_binary(raw_questions) ->
         raw_questions

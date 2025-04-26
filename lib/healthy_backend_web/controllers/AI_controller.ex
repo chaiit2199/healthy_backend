@@ -7,10 +7,10 @@ defmodule HealthyBackendWeb.AIController do
   def index(conn, %{"params" => prompt}) do
     case Diseases.search_diseases(prompt) do
       nil ->
-        json(conn, %{response: %{name: nil, data: nil, updated_at: nil}})
+        json(conn, %{response: %{name: nil, data: nil, category: nil, updated_at: nil}})
 
-      %HealthyBackend.Diseases{name: name, data: data, updated_at: updated_at} ->
-        json(conn, %{response: %{name: name, data: data, updated_at: updated_at}})
+      %HealthyBackend.Diseases{name: name, data: data, category: category, updated_at: updated_at} ->
+        json(conn, %{response: %{name: name, data: data, category: category, updated_at: updated_at}})
     end
   end
 
@@ -21,7 +21,7 @@ defmodule HealthyBackendWeb.AIController do
 
   def get_recent_diseases(conn, _params) do
     diseases =
-      Diseases.get_recent_diseases(3)
+      Diseases.get_recent_diseases(8)
       |> Enum.map(&format_disease/1)
 
     json(conn, diseases)

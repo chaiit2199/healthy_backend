@@ -17,6 +17,7 @@ defmodule HealthyBackend.Diseases do
   #   id SERIAL PRIMARY KEY,
   #   title VARCHAR(255),
   #   name VARCHAR(255),
+  #   category VARCHAR(255),
   #   data TEXT,
   #   treatments TEXT,
   #   inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -81,7 +82,8 @@ defmodule HealthyBackend.Diseases do
 
   def get_recent_diseases(limit \\ 3) do
     from(d in HealthyBackend.Diseases,
-      order_by: [desc: d.inserted_at],
+      distinct: d.category,
+      order_by: [d.category, desc: d.inserted_at],
       limit: ^limit
     )
     |> Repo.all()
