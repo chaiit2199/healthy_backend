@@ -45,6 +45,15 @@ defmodule HealthyBackendWeb.AIController do
     json(conn, diseases)
   end
 
+  def get_posts_today(conn, _) do
+    diseases =
+      Diseases.get_posts_today()
+      |> Enum.map(&format_disease/1)
+
+    json(conn, diseases)
+  end
+
+
   defp format_disease(disease) do
     disease
     |> Map.from_struct()

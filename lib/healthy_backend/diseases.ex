@@ -87,5 +87,16 @@ defmodule HealthyBackend.Diseases do
       limit: ^limit
     )
     |> Repo.all()
+    |> Enum.sort_by(& &1.inserted_at,  :desc)
+  end
+
+  def get_posts_today do
+    today = Date.utc_today()
+
+    from(p in HealthyBackend.Diseases,
+      where: fragment("DATE(?) = ?", p.inserted_at, ^today),
+      select: p
+    )
+    |> Repo.all()
   end
 end
