@@ -22,6 +22,7 @@ defmodule HealthyBackendWeb.AIController do
   def get_recent_diseases(conn, _params) do
     diseases =
       Diseases.get_recent_diseases(8)
+      |> Enum.sort_by(& &1.updated_at, {:desc, NaiveDateTime})
       |> Enum.map(&format_disease/1)
 
     json(conn, diseases)

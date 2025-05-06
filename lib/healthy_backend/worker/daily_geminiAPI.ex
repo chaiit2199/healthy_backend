@@ -101,6 +101,10 @@ defmodule HealthyBackend.DailyGeminiAPI do
     # Kiểm tra câu hỏi đã có trong DB hay chưa
     case Diseases.get_diseases_titles() do
       names when is_list(names) -> Enum.member?(names, batch_string(question))
+      IO.inspect(names, label: "namesnamesnamesnames")
+      IO.inspect(batch_string(question), label: "batch_stringquestion")
+      IO.inspect(question, label: "questionquestionquestion")
+      IO.inspect(Enum.member?(names, batch_string(question)))
       _ -> false  # Nếu không tìm thấy hoặc không có dữ liệu
     end
   end
@@ -150,11 +154,11 @@ defmodule HealthyBackend.DailyGeminiAPI do
     |> String.downcase()
     |> String.normalize(:nfd)
     |> String.replace("đ", "d")
-    |> String.replace(~r/^\s*cau-hoi-\d+-/, "")  # Loại bỏ "cau-hoi-X-" (cả chữ và số)
     |> String.replace(~r/\p{Mn}/u, "")           # Bỏ dấu tiếng Việt
     |> String.replace(~r/[^a-z0-9\s-]/u, "")     # Bỏ dấu câu và ký tự đặc biệt (bao gồm dấu gạch ngang)
     |> String.replace(~r/\s+/, "-")              # Thay thế khoảng trắng bằng dấu -
     |> String.trim()                            # Loại bỏ khoảng trắng thừa cuối chuỗi
+    |> String.replace(~r/^\s*cau-hoi-\d+-/, "")  # Loại bỏ "cau-hoi-X-" (cả chữ và số)
   end
 
   def name_format(string) do
